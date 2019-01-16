@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Friend Finder > Survey</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/papercss@1.6.0/dist/paper.min.css">
+
+</head>
+
+<body>
+    <br>
+    <div class="paper container">
+        <div class="row flex-center">
+            <h2>Survey Questions</h2>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col sm-8">
+                <div class="form-group">
+                    <label for="paperInputs2">Your name (required)</label>
+                    <input class="input-block" type="text" id="name">
+                    <br>
+                    <label for="paperInputs2">Link to photo image (required)</label>
+                    <input class="input-block" type="text" id="photo">
+                </div> <!-- End of form grup-->
+            </div>
+        </div>
+
+        <div class="col sm-5">
+            <div class="form-group">
+                <label for="paperInputs1">1. People describe you as having a sunny disposition.</label>
+                <input class="input-block" type="text" placeholder="1 (Disagree) - 5 (Agree)" id="q1">
+            </div>
+        </div>
+
+        <div class="col sm-5">
+            <div class="form-group">
+                <label for="paperInputs1">2. You are an early riser.</label>
+                <input class="input-block" type="text" placeholder="1 (Disagree) - 5 (Agree)" id="q2">
+            </div>
+        </div>
+
+        <div class="col sm-5">
+            <div class="form-group">
+                <label for="paperInputs1">3. You enjoy watching documentaries.</label>
+                <input class="input-block" type="text" placeholder="1 (Disagree) - 5 (Agree)" id="q3">
+            </div>
+        </div>
+
+        <div class="col sm-5">
+            <div class="form-group">
+                <label for="paperInputs1">4. You like to build things.</label>
+                <input class="input-block" type="text" placeholder="1 (Disagree) - 5 (Agree)" id="q4">
+            </div>
+        </div>
+
+        <div class="col sm-5">
+            <div class="form-group">
+                <label for="paperInputs1">5. You like to destroy things.</label>
+                <input class="input-block" type="text" placeholder="1 (Disagree) - 5 (Agree)" id="q5">
+            </div>
+        </div>
+
+        <div class="col sm-5">
+            <div class="form-group">
+                <label for="paperInputs1">6. You would rather text than call.</label>
+                <input class="input-block" type="text" placeholder="1 (Disagree) - 5 (Agree)" id="q6">
+            </div>
+        </div>
+
+        <div class="col sm-5">
+            <div class="form-group">
+                <label for="paperInputs1">7. Shoes were made for dancing.</label>
+                <input class="input-block" type="text" placeholder="1 (Disagree) - 5 (Agree)" id="q7">
+            </div>
+        </div>
+
+        <div class="col sm-5">
+            <div class="form-group">
+                <label for="paperInputs1">8. Balloons were made to be popped.</label>
+                <input class="input-block" type="text" placeholder="1 (Disagree) - 5 (Agree)" id="q8">
+            </div>
+        </div>
+
+        <div class="col sm-5">
+            <div class="form-group">
+                <label for="paperInputs1">9. The grass is greener on the other side.</label>
+                <input class="input-block" type="text" placeholder="1 (Disagree) - 5 (Agree)" id="q9">
+            </div>
+        </div>
+
+        <div class="col sm-5">
+            <div class="form-group">
+                <label for="paperInputs1">10. Robots will rule the world.</label>
+                <input class="input-block" type="text" placeholder="1 (Disagree) - 5 (Agree)" id="q10">
+            </div>
+        </div>
+
+
+        <div class="row flex-spaces child-borders">
+            <label class="paper-btn margin" for="modal-2">Submit Your Responses</label>
+        </div>
+        <input class="modal-state" id="modal-2" type="checkbox">
+        <div class="modal">
+            <label class="modal-bg" for="modal-2"></label>
+            <div class="modal-body">
+                <label class="btn-close" for="modal-2">X</label>
+                <h4 class="modal-title" id="modal-title"></h4>
+                <h5 class="modal-subtitle">Your Furry Friend has been Found!</h5>
+                <p class="modal-text"><img id="modal-photo" height="300px"></p>
+                <!-- <a href="/#download">Get PaperCSS</a> -->
+                <label for="modal-2" class="modal-link">Close</label>
+            </div>
+        </div>
+
+    </div> <!-- End of container div -->
+
+    <br>
+    <div class="paper container">
+        <a href="/api/friends">API Friends List</a>
+    </div>
+    <br>
+
+</body>
+<script type="text/javascript">
+    $("#modal-2").on("click", function (event) {
+        // event.preventDefault();
+        var userData = {
+            name: $("#name").val().trim(),
+            photo: $("#photo").val().trim(),
+            userScores: []
+        };
+
+        userData.userScores.push(parseInt($("#q1").val().trim())),
+            userData.userScores.push(parseInt($("#q2").val().trim())),
+            userData.userScores.push(parseInt($("#q3").val().trim())),
+            userData.userScores.push(parseInt($("#q4").val().trim())),
+            userData.userScores.push(parseInt($("#q5").val().trim())),
+            userData.userScores.push(parseInt($("#q6").val().trim())),
+            userData.userScores.push(parseInt($("#q7").val().trim())),
+            userData.userScores.push(parseInt($("#q8").val().trim())),
+            userData.userScores.push(parseInt($("#q9").val().trim())),
+            userData.userScores.push(parseInt($("#q10").val().trim())),
+
+            $.get("/api/friends", function (req, res) {
+                const friend = {
+                    breed: "",
+                    photo: ""
+                };
+                let friends = req.data;
+                let lowestDif = 0;
+
+                for (i = 0; i < friends.length; i++) {
+                    let qDif = 0;
+
+                    for (j = 0; j < userData.userScores.length; j++) {
+                        qDif += Math.abs(userData.userScores[j] - friends[i].scores[j]);
+                    };
+                    friends[i].totalDif = qDif;
+
+                    let checkLowest = function () {
+                        if (i == 0) {
+                            lowestDif = friends[i].totalDif;
+                        } else if (friends[i].totalDif < lowestDif) {
+                            lowestDif = friends[i].totalDif;
+                        };
+                    };
+                    checkLowest();
+                };
+
+                for (i = 0; i < friends.length; i++) {
+                    let checkWinner = function () {
+                        if (friends[i].totalDif > lowestDif) {
+                            friends[i].winner = false;
+                        } else if (friends[i].totalDif == lowestDif) {
+                            friends[i].winner = true;
+                            friend.breed = friends[i].breed;
+                            friend.photo = friends[i].photo;
+                        };
+                    };
+                    checkWinner();
+                };
+
+                $("#modal-title").html(friend.breed);
+                $("#modal-photo").attr("src", friend.photo);
+            });
+    });
+</script>
+
+</html>
